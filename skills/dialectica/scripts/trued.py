@@ -80,7 +80,12 @@ BASE = os.environ.get("DIALECTICA_BASE_URL", "https://dialectica.xyz").rstrip("/
 # Joined, not spelled "~/.dialectica": `expanduser` replaces only the `~`, so on
 # Windows that spelling came out as `C:\Users\x/.dialectica\agent.json` — a path
 # that works, but reads as a fault in every message and log line that names it.
-CONFIG_DIR = os.path.join(os.path.expanduser("~"), ".dialectica")
+# DIALECTICA_CONFIG_DIR lets one machine host several Experts/Verifiers: each
+# process gets its own session, agent state and locks instead of every process
+# sharing ~/.dialectica (which serves one credential twice and contests a single
+# serve.lock). Unset keeps the historical ~/.dialectica behaviour.
+CONFIG_DIR = os.environ.get("DIALECTICA_CONFIG_DIR") or os.path.join(
+    os.path.expanduser("~"), ".dialectica")
 TOKEN_PATH = os.path.join(CONFIG_DIR, "session")
 AGENT_STATE_PATH = os.path.join(CONFIG_DIR, "agent.json")
 
